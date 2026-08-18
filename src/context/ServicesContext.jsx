@@ -2,6 +2,26 @@ import { useEffect, useMemo, useState } from 'react'
 import { fetchServices } from '../services/api'
 import { ServicesContext } from './servicesContext'
 
+// El backend real no expone `category`/`pillar` (metadata local del mock).
+// Se derivan del nombre del Service para que funcione con datos reales.
+const CATEGORIAS_POR_NOMBRE = [
+  { match: 'CORTE UNISEX', label: 'Corte', pillar: 'Corte' },
+  { match: 'TRATAMIENTOS', label: 'Tratamientos', pillar: 'Tratamientos' },
+  { match: 'COLOR', label: 'Color', pillar: 'Color' },
+  { match: 'UÑAS', label: 'Uñas', pillar: 'Uñas' },
+]
+
+function categoriaDeService(svc) {
+  if (svc.category) {
+    return { label: svc.category, pillar: svc.pillar || svc.category }
+  }
+  const nombre = (svc.name || '').trim().toUpperCase()
+  const match =
+    CATEGORIAS_POR_NOMBRE.find((c) => nombre.includes(c.match)) ??
+    CATEGORIAS_POR_NOMBRE.find((c) => c.match.includes(nombre))
+  return match ?? { label: svc.name || 'Servicio', pillar: svc.name || 'Servicio' }
+}
+
 export function ServicesProvider({ children }) {
   const [services, setServices] = useState([])
   const [selectedTypes, setSelectedTypes] = useState([])
@@ -32,22 +52,23 @@ export function ServicesProvider({ children }) {
     return () => { cancelled = true }
   }, [])
 
-  // Derivar categorías a partir de los services (campo `category` del mock)
+  // Derivar categorías a partir de los services (campo `category` del mock
+  // o nombre del Service cuando viene del backend real)
   const categories = useMemo(() => {
     const map = new Map()
     services.forEach((svc) => {
-      const key = svc.category
-      if (!map.has(key)) {
-        map.set(key, {
-          id: key.toLowerCase().replace(/\s+/g, '-'),
-          label: svc.category,
-          pillar: svc.pillar,
+      const { label, pillar } = categoriaDeService(svc)
+      if (!map.has(label)) {
+        map.set(label, {
+          id: label.toLowerCase().replace(/\s+/g, '-'),
+          label,
+          pillar,
           description: svc.description,
           image: svc.referenceImage?.url || null,
           services: [],
         })
       }
-      map.get(key).services.push(svc)
+      map.get(label).services.push(svc)
     })
     return Array.from(map.values())
   }, [services])
@@ -60,7 +81,7 @@ export function ServicesProvider({ children }) {
           ...t,
           serviceId: svc.id,
           serviceName: svc.name,
-          category: svc.category,
+          category: categoriaDeService(svc).label,
           cancelable: svc.cancelable,
           cancellationPeriodHours: svc.cancellationPeriodHours,
         })),
