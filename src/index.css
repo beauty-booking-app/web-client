@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: hsl(14, 52%, 56%);
+  --color-primary-hover: hsl(14, 52%, 46%);
+  --color-secondary: hsl(32 35% 92%);
+  --color-accent: hsl(90, 22%, 50%);
+  --color-background: hsl(30, 33%, 97%);
+  --color-foreground: hsl(25, 35%, 22%);
+  --color-foreground-muted: hsl(25, 20%, 45%);
+  --color-border: hsl(30, 15%, 88%);
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Nunito Sans", sans-serif;
+}
+
+:root {
+  --primary: hsl(14, 52%, 56%);
+  --primary-hover: hsl(14, 52%, 46%);
+  --secondary: hsl(32 35% 92%);
+  --accent: hsl(90, 22%, 50%);
+  --background: hsl(30, 33%, 97%);
+  --foreground: hsl(25, 35%, 22%);
+  --foreground-muted: hsl(25, 20%, 45%);
+  --border: hsl(30, 15%, 88%);
+
+  scroll-padding-top: 80px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--foreground);
+  background: var(--background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--foreground);
+  line-height: 1.15;
+}
+
+/* Scroll reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Card hover lift */
+.lift-card {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lift-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.08),
+    0 4px 10px -3px rgba(0, 0, 0, 0.05);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .lift-card {
+    transition: none;
+  }
+
+  .lift-card:hover {
+    transform: none;
+  }
+}

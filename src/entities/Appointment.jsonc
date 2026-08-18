@@ -1,0 +1,51 @@
+{
+  "name": "Appointment",
+  "type": "object",
+  "description": "Cita reservada por un cliente. Shape alineado con POST /api/v1/appointments del backend.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "ID de la cita"
+    },
+    "humanId": {
+      "type": "string",
+      "title": "ID corto legible",
+      "description": "Identificador amigable para el cliente, ej. 'A3F9K2'"
+    },
+    "serviceTypeIds": {
+      "type": "array",
+      "items": { "type": "string" },
+      "title": "IDs de los tipos de servicio seleccionados",
+      "description": "Lista de serviceTypeIds (no service ids). Mínimo 1."
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Fecha de la cita",
+      "description": "Formato YYYY-MM-DD"
+    },
+    "startTime": {
+      "type": "string",
+      "title": "Hora de inicio",
+      "description": "Formato HH:MM, hora local del salón"
+    },
+    "referenceComment": {
+      "type": ["string", "null"],
+      "title": "Comentario de referencia",
+      "description": "Nota opcional del cliente sobre el servicio deseado"
+    },
+    "referenceImageId": {
+      "type": ["string", "null"],
+      "title": "ID de imagen de referencia",
+      "description": "ID del archivo subido vía POST /api/v1/files"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pendiente", "confirmado", "reprogramado", "completado", "cancelado", "no_asiste"],
+      "default": "pendiente",
+      "title": "Estado de la cita"
+    }
+  },
+  "required": ["serviceTypeIds", "date", "startTime"]
+}
