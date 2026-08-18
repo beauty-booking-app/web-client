@@ -4,7 +4,10 @@ import {
   generateMockAvailableDates,
 } from './mockData'
 
-const BASE_URL = import.meta.env.VITE_API_URL
+// URL base del backend. Prod por defecto; sobrescribir con VITE_API_URL (dev).
+const DEFAULT_API_URL = 'https://api-backend-rho-vert.vercel.app'
+
+const BASE_URL = import.meta.env.VITE_API_URL || DEFAULT_API_URL
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
