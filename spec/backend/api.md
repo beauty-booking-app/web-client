@@ -123,11 +123,13 @@ Devuelve los servicios activos con sus tipos activos:
 
 | Método | Endpoint | Descripción |
 |---|---|---|
-| GET | `/availability/calendar` | Días disponibles del mes, por lista de types. |
+| GET | `/availability/calendar` | Días disponibles **a partir de hoy** del mes, por lista de types. |
 | GET | `/availability/slots` | Horarios disponibles de un día, por lista de types. |
-| POST | `/availability/validate` | Validar un horario antes de confirmar. |
+| GET | `/availability/validate` | Validar un horario antes de confirmar. |
 
 > **Importante:** estos endpoints reciben una **lista** de `serviceTypeIds` (una cita puede tener varios servicios). La duración y el precio son los **totales sumados**. La ocupación es **global**: un turno tomado bloquea el bloque horario, sin importar el servicio.
+>
+> **`/calendar` arranca desde hoy** — no devuelve fechas pasadas; un mes ya terminado devuelve `availableDates: []`.
 
 ### GET /availability/calendar
 ```
@@ -154,10 +156,11 @@ GET /api/v1/availability/slots?serviceTypeIds={id}&serviceTypeIds={id2}&date=202
 }
 ```
 
-### POST /availability/validate
+### GET /availability/validate
+```
+GET /api/v1/availability/validate?serviceTypeIds={id}&serviceTypeIds={id2}&date=2026-08-20&startTime=10:00
+```
 ```json
-// Request
-{ "serviceTypeIds": ["<uuid>"], "date": "2026-08-20", "startTime": "10:00" }
 // Response 200
 { "available": true, "endTime": "10:35", "price": 12000 }
 ```
@@ -165,11 +168,13 @@ Errores: `409 SlotUnavailable` si el horario no está disponible (ocupado, fuera
 
 ---
 
-## Citas del cliente (`/appointments`) — Cliente (dueño) o Admin
+## Citas del cliente (`/appointments`) — Token de cliente anónimo o Admin
+
+> **Nuevo en feature 008:** el web-client reserva **sin login** usando un **JWT firmado** con la clave compartida (ver "Reserva anónima" más abajo). Los endpoints de cita aceptan `Authorization: Bearer <admin>` **o** `X-Client-Token: <jwt>` del dueño. Sin ninguna identidad válida → 401.
 
 | Método | Endpoint | Descripción |
 |---|---|---|
-| POST | `/appointments` | Crear cita (con lista de services). |
+| POST | `/appointments` | Crear cita (con lista de services). Acepta token de cliente o Bearer. |
 | GET | `/appointments/{id}` | Ver detalle (dueño o Admin). |
 | PATCH | `/appointments/{id}/cancel` | Cancelar la cita completa (regla estricta: todos los servicios deben permitirlo). |
 | POST | `/appointments/{id}/services/{serviceTypeId}/cancel` | Cancelar **un solo servicio** (parcial). |
@@ -179,14 +184,22 @@ Errores: `409 SlotUnavailable` si el horario no está disponible (ocupado, fuera
 
 ### POST /appointments
 ```json
-// Request
+// Request (token de cliente anónimo; clientName/clientEmail requeridos al reservar)
 {
   "serviceTypeIds": ["<uuid-corte>", "<uuid-nutricion>"],
   "date": "2026-08-20",
   "startTime": "10:00",
   "referenceImageId": "<uuid-file-opcional>",
-  "referenceComment": "Más corto de los costados"
+  "referenceComment": "Más corto de los costados",
+  "clientName": "Juan Pérez",
+  "clientPhone": "+541112345678",
+  "clientEmail": "juan@example.com"
 }
+// Header
+X-Client-Token: <jwt-firmado>
+// Admin (api-usuario) no necesita client*; crea con el user autenticado.
+```
+```json
 // Response 201
 {
   "id": "<uuid>",
@@ -207,7 +220,18 @@ Errores: `409 SlotUnavailable` si el horario no está disponible (ocupado, fuera
 }
 ```
 - **`humanId`** es el identificador corto y amigable que el cliente puede usar para seguir su turno (por página, sin token). El precio y la duración se **congelan** al crear.
-- Errores: `404 NotFound` (un type no existe/inactivo), `409 SlotUnavailable` (bloque ocupado), `422` (lista vacía).
+- Errores: `401` (sin token válido), `400 ClientDataRequired` (reserva anónima sin `clientName`/`clientEmail`), `404 NotFound` (un type no existe/inactivo), `409 SlotUnavailable` (bloque ocupado), `422` (lista vacía).
+
+### Reserva anónima — token firmado (feature 008)
+
+El web-client firma un **JWT (HS256)** con una clave compartida y lo manda en `X-Client-Token`:
+- **Clave:** igual en el backend (`CLIENT_TOKEN_SECRET` en `.env`) y en el web-client (`VITE_CLIENT_TOKEN_SECRET` en el build). No va en el repo.
+- **Claims:** `sub: "web-client"`, `jti` (UUID persistido en localStorage, identifica la sesión), `exp` (default 90 días), `client_version` (para rotar la clave sin romper sesiones).
+- El backend **valida la firma/`exp`/`sub`** y guarda solo el hash del `jti` en `client_tokens`. Firma inválida/vencida/sub incorrecta → 401.
+- **Límite de seguridad:** la clave viaja en el bundle público de la SPA (extraíble con devtools); el token bloquea peticiones sin firma/otra clave, pero no es autenticación fuerte. Nunca autoriza acciones de admin.
+- La subida de archivos (`/files`) sigue requiriendo un usuario autenticado; un token anónimo solo puede **asociar** una imagen ya subida a su cita.
+
+> 📄 **Guía de implementación para el web-client:** ver **`frontend/jwt-client-token.md`** — emisión/firma del JWT (librería `jose`, envío del header, manejo de expiración y de los errores 401/400/409).
 
 ### PATCH /appointments/{id}/cancel
 ```json
@@ -462,23 +486,26 @@ o para reminders: `{ "processed": 15, "created": 14 }`.
 ```txt
 1. GET /api/v1/config                     → datos públicos del negocio
 2. GET /api/v1/public/services            → lista de servicios con tipos
-3. GET /api/v1/availability/calendar?serviceTypeIds=...&month=YYYY-MM  → días disponibles
+3. GET /api/v1/availability/calendar?serviceTypeIds=...&month=YYYY-MM  → días disponibles (desde hoy)
 4. GET /api/v1/availability/slots?serviceTypeIds=...&date=YYYY-MM-DD   → horarios disponibles
-5. POST /api/v1/availability/validate     → confirmar que el horario sigue libre
-6. POST /api/v1/files (entity=appointment_reference)  → subir imagen de referencia (opcional)
-7. POST /api/v1/appointments              → crear la cita (lista de serviceTypeIds)
+5. GET /api/v1/availability/validate?serviceTypeIds=...&date=...&startTime=...  → confirmar que sigue libre
+6. (Opcional) POST /api/v1/files (solo usuario autenticado) → subir imagen de referencia
+7. POST /api/v1/appointments (+ X-Client-Token firmado y clientName/clientEmail) → crear la cita
 ```
 
 ## Ejemplos de consumo (curl)
 
 ```bash
-# Login
+# Login (solo admin/panel)
 curl -s -X POST localhost:8000/api/v1/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"email":"juan@example.com","password":"password123"}'
+  -d '{"email":"admin@example.com","password":"clave123"}'
 
-# Crear cita (con token)
+# Reserva anónima (web-client): validar horario
+curl -s "localhost:8000/api/v1/availability/validate?serviceTypeIds=UUID&date=2026-08-20&startTime=10:00"
+
+# Crear cita anónima (con JWT firmado en X-Client-Token)
 curl -s -X POST localhost:8000/api/v1/appointments \
-  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-  -d '{"serviceTypeIds":["<corte>","<nutricion>"],"date":"2026-08-20","startTime":"10:00"}'
+  -H 'X-Client-Token: <jwt-firmado>' -H 'Content-Type: application/json' \
+  -d '{"serviceTypeIds":["<corte>"],"date":"2026-08-20","startTime":"10:00","clientName":"Juan","clientEmail":"juan@x.com"}'
 ```
