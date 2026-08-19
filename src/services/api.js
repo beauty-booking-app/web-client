@@ -1,3 +1,5 @@
+import { getClientToken } from '../lib/clientToken.js'
+
 const BASE_URL = import.meta.env.VITE_API_URL || 'https://api-backend-rho-vert.vercel.app'
 
 export async function fetchServices() {
@@ -83,7 +85,6 @@ export async function createAppointment({
     status: 'pendiente',
     statusDetail: 'Turno pendiente de confirmación',
   }
-  return res.json()
 }
 
 // Traduce los errores del backend a mensajes claros para el usuario.

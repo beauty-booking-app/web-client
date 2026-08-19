@@ -2,12 +2,11 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Check } from 'lucide-react'
 import { useServices } from '../hooks/useServices'
-import { createAppointment } from '../services/api'
 import StepServices from '../components/booking/StepServices'
 import StepDateTime from '../components/booking/StepDateTime'
 import StepClient from '../components/booking/StepClient'
 import StepConfirm from '../components/booking/StepConfirm'
-import Toast from '../components/Toast'
+import { createAppointment } from '../services/api'
 
 const STEPS = [
   { id: 1, label: 'Servicios' },
@@ -23,7 +22,7 @@ export default function BookingPage() {
   const [client, setClient] = useState({ name: '', phone: '', email: '' })
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState(null)
-  const [toastKey, setToastKey] = useState(0)
+  const [appointment, setAppointment] = useState(null)
 
   const goNext = () => setStep((s) => Math.min(s + 1, 4))
   const goBack = () => {
@@ -48,26 +47,6 @@ export default function BookingPage() {
       setStep(4)
     } catch (err) {
       setSubmitError(err.message || 'No se pudo crear la cita. Intentá de nuevo.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleConfirm = async (clientData) => {
-    setSubmitError(null)
-    setSubmitting(true)
-    try {
-      await createAppointment({
-        serviceTypeIds: selectedTypes,
-        date,
-        startTime: time,
-        referenceComment: null,
-      })
-      setClient(clientData)
-      goNext()
-    } catch (err) {
-      setSubmitError(err.message || 'Error al confirmar la cita')
-      setToastKey((k) => k + 1)
     } finally {
       setSubmitting(false)
     }
@@ -148,9 +127,10 @@ export default function BookingPage() {
           <StepClient
             client={client}
             onChange={setClient}
-            onConfirm={handleConfirm}
+            onNext={handleConfirm}
             onBack={goBack}
             submitting={submitting}
+            error={submitError}
           />
         )}
 
@@ -164,12 +144,6 @@ export default function BookingPage() {
           />
         )}
       </main>
-
-      <Toast
-        key={toastKey}
-        message={submitError}
-        onClose={() => setSubmitError(null)}
-      />
     </div>
   )
 }

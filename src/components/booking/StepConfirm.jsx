@@ -7,7 +7,7 @@ function formatPrice(n) {
 }
 
 export default function StepConfirm({ services, date, time, client, appointment }) {
-  const { allTypes } = useServices()
+  const { allTypes, clearSelectedTypes } = useServices()
   const selectedTypes = allTypes.filter((t) => services.includes(t.id))
   const totalPrice = selectedTypes.reduce((sum, t) => sum + t.price, 0)
 
