@@ -1,76 +1,25 @@
-import {
-  MOCK_SERVICES,
-  MOCK_SLOTS,
-  generateMockAvailableDates,
-} from './mockData'
-import { getClientToken } from '../lib/clientToken'
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://api-backend-rho-vert.vercel.app'
 
-// URL base del backend. Prod por defecto; sobrescribir con VITE_API_URL (dev).
-const DEFAULT_API_URL = 'https://api-backend-rho-vert.vercel.app'
-
-const BASE_URL = import.meta.env.VITE_API_URL || DEFAULT_API_URL
-
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-// ─── GET /public/services ───────────────────────────────────────────
-// Devuelve Service[] con sus ServiceType[] anidados.
 export async function fetchServices() {
-  if (BASE_URL) {
-    const res = await fetch(`${BASE_URL}/api/v1/public/services`)
-    if (!res.ok) throw new Error('Error al cargar servicios')
-    return res.json()
-  }
-
-  await delay(300)
-  return MOCK_SERVICES
+  const res = await fetch(`${BASE_URL}/api/v1/public/services`)
+  if (!res.ok) throw new Error('Error al cargar servicios')
+  return res.json()
 }
 
-// ─── GET /availability/calendar ─────────────────────────────────────
-// Devuelve los días disponibles del mes para los serviceTypeIds dados.
 export async function fetchAvailableDates(serviceTypeIds, month) {
-  if (BASE_URL) {
-    const params = new URLSearchParams({ month })
-    serviceTypeIds.forEach((id) => params.append('serviceTypeIds', id))
-    const res = await fetch(`${BASE_URL}/api/v1/availability/calendar?${params}`)
-    if (!res.ok) throw new Error('Error al cargar disponibilidad')
-    return res.json()
-  }
-
-  await delay(200)
-  return {
-    month,
-    availableDates: generateMockAvailableDates(),
-  }
+  const params = new URLSearchParams({ month })
+  serviceTypeIds.forEach((id) => params.append('serviceTypeIds', id))
+  const res = await fetch(`${BASE_URL}/api/v1/availability/calendar?${params}`)
+  if (!res.ok) throw new Error('Error al cargar disponibilidad')
+  return res.json()
 }
 
-// ─── GET /availability/slots ────────────────────────────────────────
-// Devuelve los horarios disponibles para una fecha y lista de types.
 export async function fetchSlots(serviceTypeIds, date) {
-  if (BASE_URL) {
-    const params = new URLSearchParams({ date })
-    serviceTypeIds.forEach((id) => params.append('serviceTypeIds', id))
-    const res = await fetch(`${BASE_URL}/api/v1/availability/slots?${params}`)
-    if (!res.ok) throw new Error('Error al cargar horarios')
-    return res.json()
-  }
-
-  await delay(200)
-
-  const selectedTypes = MOCK_SERVICES.flatMap((s) => s.types).filter((t) =>
-    serviceTypeIds.includes(t.id),
-  )
-  const totalDuration = selectedTypes.reduce((sum, t) => sum + t.durationMinutes, 0)
-  const totalPrice = selectedTypes.reduce((sum, t) => sum + t.price, 0)
-
-  return {
-    serviceTypes: selectedTypes.map(({ id, name, durationMinutes, price }) => ({ id, name, durationMinutes, price })),
-    date,
-    durationMinutes: totalDuration,
-    price: totalPrice,
-    slots: MOCK_SLOTS,
-  }
+  const params = new URLSearchParams({ date })
+  serviceTypeIds.forEach((id) => params.append('serviceTypeIds', id))
+  const res = await fetch(`${BASE_URL}/api/v1/availability/slots?${params}`)
+  if (!res.ok) throw new Error('Error al cargar horarios')
+  return res.json()
 }
 
 // ─── POST /appointments ────────────────────────────────────────────
@@ -134,6 +83,7 @@ export async function createAppointment({
     status: 'pendiente',
     statusDetail: 'Turno pendiente de confirmación',
   }
+  return res.json()
 }
 
 // Traduce los errores del backend a mensajes claros para el usuario.

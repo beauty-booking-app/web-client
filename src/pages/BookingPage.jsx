@@ -2,11 +2,12 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Check } from 'lucide-react'
 import { useServices } from '../hooks/useServices'
+import { createAppointment } from '../services/api'
 import StepServices from '../components/booking/StepServices'
 import StepDateTime from '../components/booking/StepDateTime'
 import StepClient from '../components/booking/StepClient'
 import StepConfirm from '../components/booking/StepConfirm'
-import { createAppointment } from '../services/api'
+import Toast from '../components/Toast'
 
 const STEPS = [
   { id: 1, label: 'Servicios' },
@@ -15,14 +16,14 @@ const STEPS = [
 ]
 
 export default function BookingPage() {
-  const { selectedTypes, toggleType } = useServices()
+  const { selectedTypes, toggleType, clearSelectedTypes } = useServices()
   const [step, setStep] = useState(1)
   const [date, setDate] = useState(null)
   const [time, setTime] = useState(null)
   const [client, setClient] = useState({ name: '', phone: '', email: '' })
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState(null)
-  const [appointment, setAppointment] = useState(null)
+  const [toastKey, setToastKey] = useState(0)
 
   const goNext = () => setStep((s) => Math.min(s + 1, 4))
   const goBack = () => {
@@ -52,6 +53,26 @@ export default function BookingPage() {
     }
   }
 
+  const handleConfirm = async (clientData) => {
+    setSubmitError(null)
+    setSubmitting(true)
+    try {
+      await createAppointment({
+        serviceTypeIds: selectedTypes,
+        date,
+        startTime: time,
+        referenceComment: null,
+      })
+      setClient(clientData)
+      goNext()
+    } catch (err) {
+      setSubmitError(err.message || 'Error al confirmar la cita')
+      setToastKey((k) => k + 1)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
@@ -59,6 +80,7 @@ export default function BookingPage() {
         <Link
           to="/"
           aria-label="Volver al inicio"
+          onClick={clearSelectedTypes}
           className="font-mono text-[10px] uppercase tracking-wide font-semibold text-foreground/60 hover:text-foreground transition-colors inline-flex items-center gap-2 mb-6"
         >
           ← Volver al inicio
@@ -126,10 +148,9 @@ export default function BookingPage() {
           <StepClient
             client={client}
             onChange={setClient}
-            onNext={handleConfirm}
+            onConfirm={handleConfirm}
             onBack={goBack}
             submitting={submitting}
-            error={submitError}
           />
         )}
 
@@ -143,6 +164,12 @@ export default function BookingPage() {
           />
         )}
       </main>
+
+      <Toast
+        key={toastKey}
+        message={submitError}
+        onClose={() => setSubmitError(null)}
+      />
     </div>
   )
 }

@@ -87,6 +87,7 @@ export default function StepConfirm({ services, date, time, client, appointment 
 
       <Link
         to="/"
+        onClick={clearSelectedTypes}
         className="mt-10 font-mono text-[10px] uppercase tracking-wide font-semibold px-10 py-4 rounded-full border border-border text-foreground/70 hover:text-foreground hover:border-foreground transition-colors inline-flex items-center"
       >
         Volver al inicio
