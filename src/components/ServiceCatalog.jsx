@@ -13,6 +13,12 @@ export default function ServiceCatalog() {
   const sectionRef = useRef(null)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if (!loading && categories.length > 0 && activeId === null) {
+      setActiveId(categories[0].id)
+    }
+  }, [loading, categories, activeId])
+
   const activeCategory = categories.find((c) => c.id === activeId) || categories[0]
 
   useEffect(() => {
@@ -39,7 +45,25 @@ export default function ServiceCatalog() {
   if (loading) {
     return (
       <section id="catalogo" className="py-20 sm:py-28 px-[6%] sm:px-[8%]">
-        <p className="text-foreground/50 text-center font-mono text-xs uppercase tracking-wide">Cargando servicios...</p>
+        <div className="animate-pulse">
+          <div className="h-3 w-40 bg-foreground/10 rounded mb-4" />
+          <div className="h-10 w-96 max-w-full bg-foreground/10 rounded mb-12" />
+
+          <div className="flex gap-2 mb-10">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-10 w-24 bg-foreground/10 rounded-t-xl" />
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr_4fr] gap-10 lg:gap-16">
+            <div className="h-80 bg-foreground/10 rounded-2xl" />
+            <div className="flex flex-col gap-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-24 bg-foreground/10 rounded-2xl" />
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
     )
   }
@@ -102,21 +126,29 @@ export default function ServiceCatalog() {
           id={`panel-${activeId}`}
           className="grid grid-cols-1 lg:grid-cols-[3fr_4fr] gap-10 lg:gap-16 items-start"
         >
-          {/* Image */}
-          <div className="reveal" style={{ transitionDelay: '0ms' }}>
-            {activeCategory.image && (
-              <img
-                src={activeCategory.image}
-                alt={activeCategory.label}
-                className="w-full rounded-2xl object-cover aspect-3/4"
-              />
+          {/* Image / Description */}
+          <div className="reveal relative" style={{ transitionDelay: '0ms' }}>
+            {activeCategory.image ? (
+              <>
+                <img
+                  src={activeCategory.image}
+                  alt={activeCategory.label}
+                  className="w-full rounded-2xl object-cover aspect-3/4"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-background/85 via-background/10 to-transparent rounded-2xl" />
+                <div className="absolute bottom-0 left-0 p-8">
+                  <p className="font-display text-xl sm:text-2xl text-primary max-w-xs leading-tight">
+                    {activeCategory.description}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <div className="rounded-2xl bg-card border border-border p-8">
+                <p className="font-display text-xl sm:text-2xl text-primary max-w-xs leading-tight">
+                  {activeCategory.description}
+                </p>
+              </div>
             )}
-            <div className="absolute inset-0 bg-linear-to-t from-background/85 via-background/10 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-8">
-              <p className="font-display text-xl sm:text-2xl text-primary max-w-xs leading-tight">
-                {activeCategory.description}
-              </p>
-            </div>
           </div>
 
           {/* Services + types list */}

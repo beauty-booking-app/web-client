@@ -9,7 +9,7 @@ const schema = z.object({
   email: z.string().email('Ingresá un email válido'),
 })
 
-export default function StepClient({ client, onChange, onNext, onBack }) {
+export default function StepClient({ client, onChange, onConfirm, onBack, submitting }) {
   const {
     register,
     handleSubmit,
@@ -22,7 +22,7 @@ export default function StepClient({ client, onChange, onNext, onBack }) {
 
   const onSubmit = (data) => {
     onChange(data)
-    onNext()
+    onConfirm(data)
   }
 
   return (
@@ -115,7 +115,8 @@ export default function StepClient({ client, onChange, onNext, onBack }) {
           <button
             type="button"
             onClick={onBack}
-            className="font-mono text-[10px] uppercase tracking-wide font-semibold text-foreground/60 hover:text-foreground transition-colors flex items-center gap-2 cursor-pointer"
+            disabled={submitting}
+            className="font-mono text-[10px] uppercase tracking-wide font-semibold text-foreground/60 hover:text-foreground transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-30"
           >
             <MoveLeft className="h-3 w-3 animate-bounce" style={{ animationDuration: "2.5s" }} />
             Atrás
@@ -123,10 +124,10 @@ export default function StepClient({ client, onChange, onNext, onBack }) {
 
           <button
             type="submit"
-            disabled={!isValid}
+            disabled={!isValid || submitting}
             className="font-mono text-[10px] sm:text-xs uppercase tracking-wide font-semibold px-8 py-3.5 rounded-full bg-primary text-white hover:bg-primary/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-2 cursor-pointer"
           >
-            Confirmar
+            {submitting ? 'Confirmando...' : 'Confirmar'}
           </button>
         </div>
       </form>

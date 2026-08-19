@@ -34,6 +34,8 @@ export function ServicesProvider({ children }) {
     )
   }
 
+  const clearSelectedTypes = () => setSelectedTypes([])
+
   useEffect(() => {
     let cancelled = false
 
@@ -91,7 +93,7 @@ export function ServicesProvider({ children }) {
 
   return (
     <ServicesContext.Provider
-      value={{ services, categories, allTypes, selectedTypes, toggleType, loading, error }}
+      value={{ services, categories, allTypes, selectedTypes, toggleType, clearSelectedTypes, loading, error }}
     >
       {children}
     </ServicesContext.Provider>
