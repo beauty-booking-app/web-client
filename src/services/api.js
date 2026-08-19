@@ -24,6 +24,22 @@ export async function fetchSlots(serviceTypeIds, date) {
   return res.json()
 }
 
+// ─── GET /availability/validate ─────────────────────────────────────
+// Valida que un horario siga disponible antes de confirmar la reserva.
+export async function validateSlot(serviceTypeIds, date, startTime) {
+  const params = new URLSearchParams({ date, startTime })
+  serviceTypeIds.forEach((id) => params.append('serviceTypeIds', id))
+  const res = await fetch(`${BASE_URL}/api/v1/availability/validate?${params}`)
+  if (!res.ok) {
+    const err = await res.json().catch(() => null)
+    if (res.status === 409 && err?.error === 'SlotUnavailable') {
+      throw Object.assign(new Error('SlotUnavailable'), { code: 'SlotUnavailable' })
+    }
+    throw new Error(err?.message || 'Error al validar disponibilidad')
+  }
+  return res.json()
+}
+
 // ─── POST /appointments ────────────────────────────────────────────
 // Crea una cita anónima. Devuelve el Appointment creado.
 export async function createAppointment({

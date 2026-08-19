@@ -51,3 +51,9 @@
 - Actualizado `src/components/booking/StepClient.jsx`: muestra el error de creación (rol="alert"), deshabilita el botón mientras reserva ("Reservando…").
 - Actualizado `src/components/booking/StepConfirm.jsx`: muestra el `humanId` real del turno cuando la creación es exitosa.
 - Agregado `VITE_CLIENT_TOKEN_SECRET` a `.env.example` (sin valor) y `.env.local` (dev, gitignored).
+
+## 08 · Validación de disponibilidad antes de confirmar
+
+- Creado `src/services/api.js` → `validateSlot`: llama a `GET /availability/validate` antes de crear la cita. Lanza `SlotUnavailable` cuando el horario ya no está libre.
+- Creado `src/components/booking/SlotUnavailableModal.jsx`: modal que informa que el turno no está disponible y ofrece dos opciones — "Elegir otro turno" (vuelve al paso 1 del stepper) o "Volver al inicio" (redirige a la landing).
+- Actualizado `src/pages/BookingPage.jsx`: `handleConfirm` ahora valida la disponibilidad con `validateSlot` antes de llamar a `createAppointment`. Si la validación falla con `SlotUnavailable`, abre el modal. Al reprogramar se limpian fecha/hora y se vuelve al paso 1. Al elegir volver al inicio se limpian los servicios seleccionados y se navega a `/`.

@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Check } from 'lucide-react'
 import { useServices } from '../hooks/useServices'
 import StepServices from '../components/booking/StepServices'
 import StepDateTime from '../components/booking/StepDateTime'
 import StepClient from '../components/booking/StepClient'
 import StepConfirm from '../components/booking/StepConfirm'
-import { createAppointment } from '../services/api'
+import SlotUnavailableModal from '../components/booking/SlotUnavailableModal'
+import { createAppointment, validateSlot } from '../services/api'
 
 const STEPS = [
   { id: 1, label: 'Servicios' },
@@ -16,6 +17,7 @@ const STEPS = [
 
 export default function BookingPage() {
   const { selectedTypes, toggleType, clearSelectedTypes } = useServices()
+  const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [date, setDate] = useState(null)
   const [time, setTime] = useState(null)
@@ -23,6 +25,7 @@ export default function BookingPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState(null)
   const [appointment, setAppointment] = useState(null)
+  const [slotUnavailable, setSlotUnavailable] = useState(false)
 
   const goNext = () => setStep((s) => Math.min(s + 1, 4))
   const goBack = () => {
@@ -35,6 +38,7 @@ export default function BookingPage() {
     setSubmitting(true)
     setSubmitError(null)
     try {
+      await validateSlot(selectedTypes, date, time)
       const created = await createAppointment({
         serviceTypeIds: selectedTypes,
         date,
@@ -46,10 +50,27 @@ export default function BookingPage() {
       setAppointment(created)
       setStep(4)
     } catch (err) {
-      setSubmitError(err.message || 'No se pudo crear la cita. Intentá de nuevo.')
+      if (err.code === 'SlotUnavailable') {
+        setSlotUnavailable(true)
+      } else {
+        setSubmitError(err.message || 'No se pudo crear la cita. Intentá de nuevo.')
+      }
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const handleReschedule = () => {
+    setSlotUnavailable(false)
+    setDate(null)
+    setTime(null)
+    setStep(1)
+  }
+
+  const handleGoHome = () => {
+    setSlotUnavailable(false)
+    clearSelectedTypes()
+    navigate('/')
   }
 
   return (
@@ -144,6 +165,12 @@ export default function BookingPage() {
           />
         )}
       </main>
+
+      <SlotUnavailableModal
+        open={slotUnavailable}
+        onReschedule={handleReschedule}
+        onCancel={handleGoHome}
+      />
     </div>
   )
 }
