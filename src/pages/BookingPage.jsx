@@ -30,7 +30,7 @@ export default function BookingPage() {
     setStep((s) => Math.max(s - 1, 1))
   }
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (clientData) => {
     if (submitting) return
     setSubmitting(true)
     setSubmitError(null)
@@ -39,9 +39,9 @@ export default function BookingPage() {
         serviceTypeIds: selectedTypes,
         date,
         startTime: time,
-        clientName: client.name,
-        clientPhone: client.phone,
-        clientEmail: client.email,
+        clientName: clientData.name,
+        clientPhone: clientData.phone,
+        clientEmail: clientData.email,
       })
       setAppointment(created)
       setStep(4)

@@ -22,7 +22,7 @@ export default function StepClient({ client, onChange, onNext, onBack, submittin
 
   const onSubmit = (data) => {
     onChange(data)
-    onNext()
+    onNext(data)
   }
 
   return (
