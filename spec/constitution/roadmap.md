@@ -8,6 +8,7 @@
 4. **04 · Pre-Footer Banner** — Sección CTA con fondo terracota y botón "Reservá tu turno". (`spec/features/04-pre-footer-banner/`)
 5. **05 · Footer** — Footer con grilla 4 columnas y barra inferior. (`spec/features/05-footer/`)
 6. **006 · Booking engine** — Wizard full-screen de 3 pasos: servicios → fecha/hora → datos, con confirmación visual. (`spec/features/06-booking-engine/`)
+7. **07 · Reserva anónima conectada al backend** — firma del `X-Client-Token` (JWT HS256 con `VITE_CLIENT_TOKEN_SECRET`), envío de los datos del cliente al crear la cita, y conexión del wizard con el backend real (manejo de errores 401/400/409). (`spec/features/07-reserva-anonima-backend/`)
 
 ## Siguiente 🔜
 

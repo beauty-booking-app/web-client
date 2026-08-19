@@ -6,6 +6,7 @@ import StepServices from '../components/booking/StepServices'
 import StepDateTime from '../components/booking/StepDateTime'
 import StepClient from '../components/booking/StepClient'
 import StepConfirm from '../components/booking/StepConfirm'
+import { createAppointment } from '../services/api'
 
 const STEPS = [
   { id: 1, label: 'Servicios' },
@@ -19,9 +20,37 @@ export default function BookingPage() {
   const [date, setDate] = useState(null)
   const [time, setTime] = useState(null)
   const [client, setClient] = useState({ name: '', phone: '', email: '' })
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState(null)
+  const [appointment, setAppointment] = useState(null)
 
   const goNext = () => setStep((s) => Math.min(s + 1, 4))
-  const goBack = () => setStep((s) => Math.max(s - 1, 1))
+  const goBack = () => {
+    setSubmitError(null)
+    setStep((s) => Math.max(s - 1, 1))
+  }
+
+  const handleConfirm = async () => {
+    if (submitting) return
+    setSubmitting(true)
+    setSubmitError(null)
+    try {
+      const created = await createAppointment({
+        serviceTypeIds: selectedTypes,
+        date,
+        startTime: time,
+        clientName: client.name,
+        clientPhone: client.phone,
+        clientEmail: client.email,
+      })
+      setAppointment(created)
+      setStep(4)
+    } catch (err) {
+      setSubmitError(err.message || 'No se pudo crear la cita. Intentá de nuevo.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -97,8 +126,10 @@ export default function BookingPage() {
           <StepClient
             client={client}
             onChange={setClient}
-            onNext={goNext}
+            onNext={handleConfirm}
             onBack={goBack}
+            submitting={submitting}
+            error={submitError}
           />
         )}
 
@@ -108,6 +139,7 @@ export default function BookingPage() {
             date={date}
             time={time}
             client={client}
+            appointment={appointment}
           />
         )}
       </main>

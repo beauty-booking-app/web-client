@@ -42,3 +42,12 @@
 - Creado `src/components/booking/StepConfirm.jsx`: resumen del turno + botón "Volver al inicio".
 - Actualizado `src/App.jsx` para importar `<AppRouter />`.
 
+
+## 07 · Reserva anónima conectada al backend
+
+- Creado `src/lib/clientToken.js`: firma el JWT de reserva anónima (HMAC-SHA256 con Web Crypto) usando `VITE_CLIENT_TOKEN_SECRET`; persiste el `jti` y el token en `localStorage`; reemite el token si venció (`exp` 90 días). Claims: `sub=web-client`, `jti`, `client_version`, `iat`, `exp`.
+- Actualizado `src/services/api.js`: `createAppointment` ahora envía el header `X-Client-Token` y los datos del cliente (`clientName`/`clientPhone`/`clientEmail`); mapea errores del backend (401, 400 ClientDataRequired, 409 SlotUnavailable) a mensajes claros; el fallback offline conserva los campos del cliente.
+- Actualizado `src/pages/BookingPage.jsx`: al confirmar (paso 3) llama `createAppointment`; maneja estados `submitting`/`submitError`; muestra el error y permite reintentar; en éxito pasa a la confirmación con el turno real.
+- Actualizado `src/components/booking/StepClient.jsx`: muestra el error de creación (rol="alert"), deshabilita el botón mientras reserva ("Reservando…").
+- Actualizado `src/components/booking/StepConfirm.jsx`: muestra el `humanId` real del turno cuando la creación es exitosa.
+- Agregado `VITE_CLIENT_TOKEN_SECRET` a `.env.example` (sin valor) y `.env.local` (dev, gitignored).

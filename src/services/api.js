@@ -3,6 +3,7 @@ import {
   MOCK_SLOTS,
   generateMockAvailableDates,
 } from './mockData'
+import { getClientToken } from '../lib/clientToken'
 
 // URL base del backend. Prod por defecto; sobrescribir con VITE_API_URL (dev).
 const DEFAULT_API_URL = 'https://api-backend-rho-vert.vercel.app'
@@ -73,17 +74,38 @@ export async function fetchSlots(serviceTypeIds, date) {
 }
 
 // ─── POST /appointments ────────────────────────────────────────────
-// Crea una cita. Devuelve el Appointment creado.
-export async function createAppointment({ serviceTypeIds, date, startTime, referenceComment }) {
+// Crea una cita anónima. Devuelve el Appointment creado.
+export async function createAppointment({
+  serviceTypeIds,
+  date,
+  startTime,
+  referenceComment,
+  clientName,
+  clientPhone,
+  clientEmail,
+}) {
   if (BASE_URL) {
+    const clientToken = await getClientToken()
     const res = await fetch(`${BASE_URL}/api/v1/appointments`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ serviceTypeIds, date, startTime, referenceComment }),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Client-Token': clientToken,
+      },
+      body: JSON.stringify({
+        serviceTypeIds,
+        date,
+        startTime,
+        referenceComment: referenceComment || null,
+        clientName,
+        clientPhone,
+        clientEmail,
+      }),
     })
     if (!res.ok) {
       const err = await res.json().catch(() => null)
-      throw new Error(err?.message || 'Error al crear la cita')
+      const message = mapCreateError(res.status, err)
+      throw new Error(message)
     }
     return res.json()
   }
@@ -102,7 +124,7 @@ export async function createAppointment({ serviceTypeIds, date, startTime, refer
     id: crypto.randomUUID(),
     humanId: Math.random().toString(36).substring(2, 8).toUpperCase(),
     serviceTypes: selectedTypes.map(({ id, name, durationMinutes, price }) => ({ id, name, durationMinutes, price })),
-    client: { id: crypto.randomUUID(), name: '' },
+    client: { id: crypto.randomUUID(), name: clientName },
     startTime: start.toISOString().slice(0, 19),
     endTime: end.toISOString().slice(0, 19),
     durationMinutes: totalDuration,
@@ -112,4 +134,18 @@ export async function createAppointment({ serviceTypeIds, date, startTime, refer
     status: 'pendiente',
     statusDetail: 'Turno pendiente de confirmación',
   }
+}
+
+// Traduce los errores del backend a mensajes claros para el usuario.
+function mapCreateError(status, err) {
+  if (status === 401) {
+    return 'Tu sesión venció. Recargá la página y volvé a intentar.'
+  }
+  if (status === 400 && err?.error === 'ClientDataRequired') {
+    return 'Completá tu nombre y email para reservar.'
+  }
+  if (status === 409 && err?.error === 'SlotUnavailable') {
+    return 'Ese horario ya no está disponible. Elegí otro.'
+  }
+  return err?.message || 'No se pudo crear la cita. Intentá de nuevo.'
 }

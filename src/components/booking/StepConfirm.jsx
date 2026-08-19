@@ -6,7 +6,7 @@ function formatPrice(n) {
   return n.toLocaleString('es-AR')
 }
 
-export default function StepConfirm({ services, date, time, client }) {
+export default function StepConfirm({ services, date, time, client, appointment }) {
   const { allTypes } = useServices()
   const selectedTypes = allTypes.filter((t) => services.includes(t.id))
   const totalPrice = selectedTypes.reduce((sum, t) => sum + t.price, 0)
@@ -34,6 +34,12 @@ export default function StepConfirm({ services, date, time, client }) {
       <p className="text-foreground/70 text-lg mb-10 max-w-md mx-auto">
         Te esperamos, {client.name}. Tu turno ya está reservado.
       </p>
+
+      {appointment?.humanId && (
+        <p className="font-mono text-sm uppercase tracking-wide text-accent mb-8">
+          Código de turno: {appointment.humanId}
+        </p>
+      )}
 
       {/* Resumen */}
       <div className="border border-border rounded-2xl p-8 text-left space-y-4 bg-card">
