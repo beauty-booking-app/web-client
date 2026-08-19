@@ -26,7 +26,32 @@ export default function BookingPage() {
   const [toastKey, setToastKey] = useState(0)
 
   const goNext = () => setStep((s) => Math.min(s + 1, 4))
-  const goBack = () => setStep((s) => Math.max(s - 1, 1))
+  const goBack = () => {
+    setSubmitError(null)
+    setStep((s) => Math.max(s - 1, 1))
+  }
+
+  const handleConfirm = async (clientData) => {
+    if (submitting) return
+    setSubmitting(true)
+    setSubmitError(null)
+    try {
+      const created = await createAppointment({
+        serviceTypeIds: selectedTypes,
+        date,
+        startTime: time,
+        clientName: clientData.name,
+        clientPhone: clientData.phone,
+        clientEmail: clientData.email,
+      })
+      setAppointment(created)
+      setStep(4)
+    } catch (err) {
+      setSubmitError(err.message || 'No se pudo crear la cita. Intentá de nuevo.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   const handleConfirm = async (clientData) => {
     setSubmitError(null)
@@ -135,6 +160,7 @@ export default function BookingPage() {
             date={date}
             time={time}
             client={client}
+            appointment={appointment}
           />
         )}
       </main>

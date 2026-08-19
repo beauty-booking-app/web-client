@@ -9,7 +9,7 @@ const schema = z.object({
   email: z.string().email('Ingresá un email válido'),
 })
 
-export default function StepClient({ client, onChange, onConfirm, onBack, submitting }) {
+export default function StepClient({ client, onChange, onNext, onBack, submitting = false, error = null }) {
   const {
     register,
     handleSubmit,
@@ -22,7 +22,7 @@ export default function StepClient({ client, onChange, onConfirm, onBack, submit
 
   const onSubmit = (data) => {
     onChange(data)
-    onConfirm(data)
+    onNext(data)
   }
 
   return (
@@ -110,13 +110,23 @@ export default function StepClient({ client, onChange, onConfirm, onBack, submit
           )}
         </div>
 
+        {/* Error al crear la cita */}
+        {error && (
+          <div
+            role="alert"
+            className="sm:col-span-2 rounded-xl border border-red-300 bg-red-50 text-red-700 px-4 py-3 text-sm"
+          >
+            {error}
+          </div>
+        )}
+
         {/* Navegación */}
         <div className="sm:col-span-2 flex items-center justify-between pt-4">
           <button
             type="button"
             onClick={onBack}
             disabled={submitting}
-            className="font-mono text-[10px] uppercase tracking-wide font-semibold text-foreground/60 hover:text-foreground transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-30"
+            className="font-mono text-[10px] uppercase tracking-wide font-semibold text-foreground/60 hover:text-foreground transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <MoveLeft className="h-3 w-3 animate-bounce" style={{ animationDuration: "2.5s" }} />
             Atrás
@@ -127,7 +137,7 @@ export default function StepClient({ client, onChange, onConfirm, onBack, submit
             disabled={!isValid || submitting}
             className="font-mono text-[10px] sm:text-xs uppercase tracking-wide font-semibold px-8 py-3.5 rounded-full bg-primary text-white hover:bg-primary/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-2 cursor-pointer"
           >
-            {submitting ? 'Confirmando...' : 'Confirmar'}
+            {submitting ? 'Reservando…' : 'Confirmar'}
           </button>
         </div>
       </form>
