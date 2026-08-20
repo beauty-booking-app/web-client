@@ -2,10 +2,14 @@ import { useState, useEffect, useRef } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { rescheduleAppointmentByHumanId } from '../services/api'
 
+function isEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
+
 export default function RescheduleModal({ open, humanId, onClose, onConfirmed }) {
   const [date, setDate] = useState('')
   const [startTime, setStartTime] = useState('')
-  const [verificationContact, setVerificationContact] = useState('')
+  const [contactValue, setContactValue] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const dialogRef = useRef(null)
@@ -30,24 +34,28 @@ export default function RescheduleModal({ open, humanId, onClose, onConfirmed })
   const handleClose = () => {
     setDate('')
     setStartTime('')
-    setVerificationContact('')
+    setContactValue('')
     setError(null)
     onClose()
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const contact = verificationContact.trim()
+    const contact = contactValue.trim()
     if (!date || !startTime || !contact) return
 
     setLoading(true)
     setError(null)
 
+    const contactPayload = isEmail(contact)
+      ? { email: contact, phone: null }
+      : { email: null, phone: contact }
+
     try {
       const updated = await rescheduleAppointmentByHumanId(humanId, {
         date,
         startTime,
-        verificationContact: contact,
+        ...contactPayload,
       })
       onConfirmed(updated)
     } catch (err) {
@@ -137,8 +145,8 @@ export default function RescheduleModal({ open, humanId, onClose, onConfirmed })
             <input
               id="reschedule-contact"
               type="text"
-              value={verificationContact}
-              onChange={(e) => setVerificationContact(e.target.value)}
+              value={contactValue}
+              onChange={(e) => setContactValue(e.target.value)}
               placeholder="Ej: juan@example.com o +541112345678"
               required
               className="w-full px-4 py-3 rounded-xl border border-border bg-white text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors text-sm min-h-11"
@@ -148,7 +156,7 @@ export default function RescheduleModal({ open, humanId, onClose, onConfirmed })
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <button
               type="submit"
-              disabled={loading || !date || !startTime || !verificationContact.trim()}
+              disabled={loading || !date || !startTime || !contactValue.trim()}
               className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold rounded-xl bg-primary text-white hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer min-h-11"
             >
               {loading ? 'Reprogramando…' : 'Reprogramar'}

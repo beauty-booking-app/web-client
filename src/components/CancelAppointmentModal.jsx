@@ -2,9 +2,13 @@ import { useState, useEffect, useRef } from 'react'
 import { CircleX } from 'lucide-react'
 import { cancelAppointmentByHumanId } from '../services/api'
 
+function isEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
+
 export default function CancelAppointmentModal({ open, humanId, onClose, onConfirmed }) {
   const [reason, setReason] = useState('')
-  const [verificationContact, setVerificationContact] = useState('')
+  const [contactValue, setContactValue] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const dialogRef = useRef(null)
@@ -28,23 +32,27 @@ export default function CancelAppointmentModal({ open, humanId, onClose, onConfi
 
   const handleClose = () => {
     setReason('')
-    setVerificationContact('')
+    setContactValue('')
     setError(null)
     onClose()
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const contact = verificationContact.trim()
+    const contact = contactValue.trim()
     if (!contact) return
 
     setLoading(true)
     setError(null)
 
+    const payload = isEmail(contact)
+      ? { email: contact, phone: null }
+      : { email: null, phone: contact }
+
     try {
       const updated = await cancelAppointmentByHumanId(humanId, {
         reason: reason.trim() || null,
-        verificationContact: contact,
+        ...payload,
       })
       onConfirmed(updated)
     } catch (err) {
@@ -96,7 +104,7 @@ export default function CancelAppointmentModal({ open, humanId, onClose, onConfi
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="cancel-reason" className="block text-xs font-semibold text-foreground-muted uppercase tracking-wide mb-1.5">
-              Motivo (opcional)
+              Motivo *
             </label>
             <textarea
               id="cancel-reason"
@@ -104,6 +112,7 @@ export default function CancelAppointmentModal({ open, humanId, onClose, onConfi
               onChange={(e) => setReason(e.target.value)}
               rows={2}
               placeholder="Ej: Tengo un imprevisto"
+              required
               className="w-full px-4 py-3 rounded-xl border border-border bg-white text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors text-sm resize-none"
             />
           </div>
@@ -115,8 +124,8 @@ export default function CancelAppointmentModal({ open, humanId, onClose, onConfi
             <input
               id="cancel-contact"
               type="text"
-              value={verificationContact}
-              onChange={(e) => setVerificationContact(e.target.value)}
+              value={contactValue}
+              onChange={(e) => setContactValue(e.target.value)}
               placeholder="Ej: juan@example.com o +541112345678"
               required
               className="w-full px-4 py-3 rounded-xl border border-border bg-white text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors text-sm min-h-11"
@@ -126,7 +135,7 @@ export default function CancelAppointmentModal({ open, humanId, onClose, onConfi
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <button
               type="submit"
-              disabled={loading || !verificationContact.trim()}
+              disabled={loading || !reason.trim() || !contactValue.trim()}
               className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold rounded-xl bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer min-h-11"
             >
               {loading ? 'Cancelando…' : 'Cancelar turno'}

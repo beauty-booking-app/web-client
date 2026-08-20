@@ -131,12 +131,12 @@ export async function fetchAppointmentByHumanId(humanId) {
 }
 
 // ─── PATCH /public/appointments/by-human-id/{humanId}/cancel ───────
-// Cancela un turno por código. Requiere verificationContact.
-export async function cancelAppointmentByHumanId(humanId, { reason, verificationContact }) {
+// Cancela un turno por código. Requiere email o phone del dueño.
+export async function cancelAppointmentByHumanId(humanId, { email, phone, reason } = {}) {
   const res = await fetch(`${BASE_URL}/api/v1/public/appointments/by-human-id/${humanId}/cancel`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ reason: reason || null, verificationContact }),
+    body: JSON.stringify({ reason, email: email || null, phone: phone || null }),
   })
   if (!res.ok) {
     const err = await res.json().catch(() => null)
@@ -152,12 +152,12 @@ export async function cancelAppointmentByHumanId(humanId, { reason, verification
 }
 
 // ─── POST /public/appointments/by-human-id/{humanId}/reschedule ────
-// Reprograma un turno por código. Requiere verificationContact.
-export async function rescheduleAppointmentByHumanId(humanId, { date, startTime, verificationContact }) {
+// Reprograma un turno por código. Requiere email o phone del dueño.
+export async function rescheduleAppointmentByHumanId(humanId, { date, startTime, email, phone }) {
   const res = await fetch(`${BASE_URL}/api/v1/public/appointments/by-human-id/${humanId}/reschedule`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ date, startTime, verificationContact }),
+    body: JSON.stringify({ date, startTime, email: email || null, phone: phone || null }),
   })
   if (!res.ok) {
     const err = await res.json().catch(() => null)
