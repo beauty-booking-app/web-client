@@ -1,5 +1,6 @@
 import { useServices } from '../hooks/useServices';
 import { Mail, MapPin, Clock, Phone } from "lucide-react";
+import logo from '../assets/logo.png'
 
 export default function Footer() {
   const { categories: SERVICE_CATEGORIES } = useServices();
@@ -10,15 +11,14 @@ export default function Footer() {
     >
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 mb-12">
         {/* Col 1 — Marca */}
-        <div className="flex flex-col gap-3">
-          <h3
-            className="font-display text-2xl mb-4"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
-            M&amp;M
-          </h3>
+        <div className="flex flex-col gap-3 w-50">
+          <img
+            src={logo}
+            alt="Tammi"
+            className="w-full"
+          />
 
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-center">
             Un salón de barrio donde te sentís como en casa. Corte,
             tratamiento, color y uñas con cariño y paciencia.
           </p>
@@ -88,7 +88,7 @@ export default function Footer() {
                 aria-label="Seguinos en Instagram"
                 className="text-sm hover:text-primary transition-colors"
               >
-                @m&m
+                @Tammi
               </a>
               
             </li>
