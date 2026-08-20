@@ -87,7 +87,7 @@ export default function RescheduleModal({ open, humanId, onClose, onConfirmed })
       <div
         ref={dialogRef}
         tabIndex={-1}
-        className="relative bg-card border border-border rounded-2xl p-8 max-w-md w-full shadow-xl outline-none"
+        className="relative bg-white border border-border rounded-2xl p-8 max-w-md w-full shadow-xl outline-none"
       >
         <div className="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 mx-auto mb-6">
           <RotateCcw className="h-7 w-7 text-blue-500" strokeWidth={1.5} />
