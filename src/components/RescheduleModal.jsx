@@ -6,9 +6,16 @@ function isEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
 }
 
-export default function RescheduleModal({ open, humanId, onClose, onConfirmed }) {
-  const [date, setDate] = useState('')
-  const [startTime, setStartTime] = useState('')
+function parseStartTime(isoString) {
+  if (!isoString) return { date: '', time: '' }
+  const dt = new Date(isoString)
+  return { date: dt.toISOString().slice(0, 10), time: dt.toISOString().slice(11, 16) }
+}
+
+export default function RescheduleModal({ open, humanId, currentStartTime, onClose, onConfirmed }) {
+  const initial = parseStartTime(currentStartTime)
+  const [date, setDate] = useState(initial.date)
+  const [startTime, setStartTime] = useState(initial.time)
   const [contactValue, setContactValue] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -32,8 +39,9 @@ export default function RescheduleModal({ open, humanId, onClose, onConfirmed })
   }, [open, onClose])
 
   const handleClose = () => {
-    setDate('')
-    setStartTime('')
+    const fresh = parseStartTime(currentStartTime)
+    setDate(fresh.date)
+    setStartTime(fresh.time)
     setContactValue('')
     setError(null)
     onClose()
@@ -155,19 +163,20 @@ export default function RescheduleModal({ open, humanId, onClose, onConfirmed })
 
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <button
-              type="submit"
-              disabled={loading || !date || !startTime || !contactValue.trim()}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold rounded-xl bg-primary text-white hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer min-h-11"
-            >
-              {loading ? 'Reprogramando…' : 'Reprogramar'}
-            </button>
-            <button
               type="button"
               onClick={handleClose}
               className="flex-1 inline-flex items-center justify-center px-6 py-3 text-sm font-semibold rounded-xl border border-border text-foreground/70 hover:text-foreground hover:border-foreground/40 transition-colors cursor-pointer min-h-11"
             >
               Volver
             </button>
+            <button
+              type="submit"
+              disabled={loading || !date || !startTime || !contactValue.trim()}
+              className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold rounded-xl bg-primary text-white hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer min-h-11"
+            >
+              {loading ? 'Reprogramando…' : 'Reprogramar'}
+            </button>
+            
           </div>
         </form>
       </div>

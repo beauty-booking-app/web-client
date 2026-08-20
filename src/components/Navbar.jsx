@@ -8,9 +8,22 @@ export default function Navbar() {
       <div className="flex items-center justify-end gap-4 px-[6%] sm:px-[8%] h-16 sm:h-20">
         <a
           href="/mis-turnos"
-          className="font-mono text-[10px] uppercase tracking-wide font-semibold text-foreground/60 hover:text-foreground transition-colors min-h-11 min-w-11 inline-flex items-center justify-center"
+          className="inline-flex items-center justify-center px-6 sm:px-8 py-3 text-sm font-semibold rounded-full min-h-11 min-w-11 cursor-pointer"
+          style={{
+            color: 'var(--foreground)',
+            border: '2px solid var(--border)',
+            backgroundColor: 'rgba(255,255,255,0.6)',
+            backdropFilter: 'blur(4px)',
+            transition: 'border-color 0.2s',
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.borderColor = 'var(--primary)')
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.borderColor = 'var(--border)')
+          }
         >
-          Mis turnos
+          MIS TURNOS
         </a>
         <a
           href="/reserva"
