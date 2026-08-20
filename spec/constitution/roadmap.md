@@ -12,12 +12,11 @@
 
 ## Siguiente 🔜
 
-(ninguna feature pendiente)
+8. **08 · Mis turnos** — Página `/mis-turnos` para consultar el estado de un turno con el código de seguimiento (`humanId`), y cancelar/reprogramar con verificación por contacto. Alineado con backend feature 009 (endpoints públicos). (`spec/features/08-mis-turnos/`)
 
 ## Backlog / ideas 💡
 
 - **Notificaciones de turno** — recordatorio por email o WhatsApp un día antes del turno agendado.
-- **Cancelar/reprogramar turno** — flujo para que el cliente cancele o cambie la fecha/hora de un turno existente.
 - **Valoraciones** — permitir al cliente dejar una puntuación y comentario después de asistir al turno.
 - **Servicios dinámicos** — cargar los servicios desde el backend en vez de tenerlos hardcodeados en services.js.
 - **Galería de trabajos** — sección con fotos de trabajos realizados en el salón.

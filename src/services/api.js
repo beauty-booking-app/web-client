@@ -116,3 +116,61 @@ function mapCreateError(status, err) {
   }
   return err?.message || 'No se pudo crear la cita. Intentá de nuevo.'
 }
+
+// ─── GET /public/appointments/by-human-id/{humanId} ────────────────
+// Consulta pública de turno por código. No requiere autenticación.
+export async function fetchAppointmentByHumanId(humanId) {
+  const res = await fetch(`${BASE_URL}/api/v1/public/appointments/by-human-id/${humanId}`)
+  if (!res.ok) {
+    if (res.status === 404) {
+      throw Object.assign(new Error('NotFound'), { code: 'NotFound' })
+    }
+    throw new Error('Error al buscar el turno')
+  }
+  return res.json()
+}
+
+// ─── PATCH /public/appointments/by-human-id/{humanId}/cancel ───────
+// Cancela un turno por código. Requiere verificationContact.
+export async function cancelAppointmentByHumanId(humanId, { reason, verificationContact }) {
+  const res = await fetch(`${BASE_URL}/api/v1/public/appointments/by-human-id/${humanId}/cancel`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reason: reason || null, verificationContact }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => null)
+    if (res.status === 403) {
+      throw Object.assign(new Error('ContactMismatch'), { code: 'ContactMismatch', details: err?.details })
+    }
+    if (res.status === 409 && err?.error === 'CannotCancel') {
+      throw Object.assign(new Error('CannotCancel'), { code: 'CannotCancel', details: err?.details })
+    }
+    throw new Error(err?.message || 'No se pudo cancelar el turno')
+  }
+  return res.json()
+}
+
+// ─── POST /public/appointments/by-human-id/{humanId}/reschedule ────
+// Reprograma un turno por código. Requiere verificationContact.
+export async function rescheduleAppointmentByHumanId(humanId, { date, startTime, verificationContact }) {
+  const res = await fetch(`${BASE_URL}/api/v1/public/appointments/by-human-id/${humanId}/reschedule`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ date, startTime, verificationContact }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => null)
+    if (res.status === 403) {
+      throw Object.assign(new Error('ContactMismatch'), { code: 'ContactMismatch', details: err?.details })
+    }
+    if (res.status === 409 && err?.error === 'SlotUnavailable') {
+      throw Object.assign(new Error('SlotUnavailable'), { code: 'SlotUnavailable' })
+    }
+    if (res.status === 409 && err?.error === 'CannotReschedule') {
+      throw Object.assign(new Error('CannotReschedule'), { code: 'CannotReschedule', details: err?.details })
+    }
+    throw new Error(err?.message || 'No se pudo reprogramar el turno')
+  }
+  return res.json()
+}

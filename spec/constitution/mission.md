@@ -9,6 +9,7 @@ Las piezas principales del producto son:
 1. **Landing page descriptiva** — presenta los servicios, la filosofía del salón y la información de contacto con un diseño cálido y cercano.
 2. **Catálogo de servicios** — muestra las 4 categorías (Corte, Tratamientos, Color, Uñas) con tabs, imágenes y selección múltiple de servicios.
 3. **Booking engine** — wizard full-screen de 3 pasos para reservar un turno: selección de servicios → fecha y hora → datos del cliente, con confirmación visual.
+4. **Consulta de turnos** — página `/mis-turnos` donde el cliente consulta el estado de su turno con el código de seguimiento (`humanId`).
 
 ## Para quién
 

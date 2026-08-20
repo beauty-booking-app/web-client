@@ -27,8 +27,10 @@
 - `src/components/booking/StepConfirm.jsx` — Confirmación del turno.
 - `src/pages/LandingPage.jsx` — Página de la landing page.
 - `src/pages/BookingPage.jsx` — Página del wizard de reserva.
+- `src/pages/MyBookingsPage.jsx` — Página de consulta de turnos por código de seguimiento.
+- `src/components/BookingLookup.jsx` — Formulario de búsqueda + tarjeta de resultado del turno.
 - `src/router/AppRouter.jsx` — Configuración de rutas (React Router).
-- `src/components/Navbar.jsx` — Nav fijo flotante: logo "M&M", botón CTA, fondo transparente.
+- `src/components/Navbar.jsx` — Nav fijo flotante: botones "Mis turnos" y "RESERVAR".
 - `src/lib/services.js` — Catálogo estático de servicios: 4 categorías, 16 servicios, time slots.
 - `src/entities/Appointment.jsonc` — Schema JSON de la entidad Appointment.
 - `src/index.css` — Estilos globales: Tailwind import, tokens CSS (paleta, tipografía), utilidades `.reveal`, `.lift-card`.

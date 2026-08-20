@@ -52,7 +52,18 @@
 - Actualizado `src/components/booking/StepConfirm.jsx`: muestra el `humanId` real del turno cuando la creación es exitosa.
 - Agregado `VITE_CLIENT_TOKEN_SECRET` a `.env.example` (sin valor) y `.env.local` (dev, gitignored).
 
-## 08 · Validación de disponibilidad antes de confirmar
+## 08 · Mis turnos
+
+- Creado `src/pages/MyBookingsPage.jsx`: página `/mis-turnos` con layout, título, botón "Volver al inicio" y componente `BookingLookup`.
+- Creado `src/components/BookingLookup.jsx`: formulario de búsqueda por `humanId` (input alfanumérico + botón), maneja estados loading/error/notFound/result. Focus automático al montar.
+- Creado `src/components/AppointmentCard.jsx`: tarjeta del turno con humanId, badge de estado (6 estados con colores), cliente, fecha/hora, duración, lista de servicios con precios, total, y botones "Reprogramar"/"Cancelados" condicionados por el estado.
+- Creado `src/components/CancelAppointmentModal.jsx`: modal con textarea de motivo (opcional), input de verificación (email o teléfono), manejo de errores 403 ContactMismatch y 409 CannotCancel.
+- Creado `src/components/RescheduleModal.jsx`: modal con inputs de fecha/horario, input de verificación, manejo de errores 403 ContactMismatch, 409 SlotUnavailable y 409 CannotReschedule.
+- Actualizado `src/services/api.js`: agregadas 3 funciones públicas (sin `X-Client-Token`) — `fetchAppointmentByHumanId` (GET), `cancelAppointmentByHumanId` (PATCH), `rescheduleAppointmentByHumanId` (POST). Mapeo de errores del backend feature 009.
+- Actualizado `src/router/AppRouter.jsx`: agregada ruta `/mis-turnos`.
+- Actualizado `src/components/Navbar.jsx`: agregado botón de texto "Mis turnos" al lado del botón RESERVAR.
+
+## 08b · Validación de disponibilidad antes de confirmar
 
 - Creado `src/services/api.js` → `validateSlot`: llama a `GET /availability/validate` antes de crear la cita. Lanza `SlotUnavailable` cuando el horario ya no está libre.
 - Creado `src/components/booking/SlotUnavailableModal.jsx`: modal que informa que el turno no está disponible y ofrece dos opciones — "Elegir otro turno" (vuelve al paso 1 del stepper) o "Volver al inicio" (redirige a la landing).
