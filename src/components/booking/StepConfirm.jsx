@@ -20,7 +20,7 @@ export default function StepConfirm({ services, date, time, client, appointment 
   return (
     <div className="max-w-2xl mx-auto text-center py-10">
       <div className="h-16 w-16 mx-auto mb-8 rounded-full bg-accent flex items-center justify-center">
-        <Check className="h-8 w-8 text-accent-foreground" strokeWidth={1.5} />
+        <Check className="h-8 w-8 text-white" strokeWidth={1.5} />
       </div>
 
       <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-primary mb-4">
@@ -36,13 +36,28 @@ export default function StepConfirm({ services, date, time, client, appointment 
       </p>
 
       {appointment?.humanId && (
-        <p className="font-mono text-sm uppercase tracking-wide text-accent mb-8">
-          Código de turno: {appointment.humanId}
-        </p>
+        <div className="mb-8 border border-border rounded-2xl p-6 bg-white text-left">
+          <div className="mb-3">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-wide text-foreground/50 mb-0.5">
+                Código de turno
+              </p>
+              <p className="font-mono text-2xl font-bold tracking-widest text-primary">
+                {appointment.humanId}
+              </p>
+            </div>
+          </div>
+          <p className="text-foreground/60 text-sm pl-16">
+            Guardá este código para consultar tu turno en{' '}
+            <Link to="/mis-turnos" className="text-primary font-semibold hover:underline">
+              Mis turnos
+            </Link>.
+          </p>
+        </div>
       )}
 
       {/* Resumen */}
-      <div className="border border-border rounded-2xl p-8 text-left space-y-4 bg-card">
+      <div className="border border-border rounded-2xl p-8 text-left space-y-4 bg-card bg-white">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/50 mb-2">
             Servicios
@@ -88,7 +103,7 @@ export default function StepConfirm({ services, date, time, client, appointment 
       <Link
         to="/"
         onClick={clearSelectedTypes}
-        className="mt-10 font-mono text-[10px] uppercase tracking-wide font-semibold px-10 py-4 rounded-full border border-border text-foreground/70 hover:text-foreground hover:border-foreground transition-colors inline-flex items-center"
+        className="bg-white mt-10 font-mono text-[10px] uppercase tracking-wide font-semibold px-10 py-4 rounded-full border border-border text-foreground/70 hover:text-foreground hover:border-foreground transition-colors inline-flex items-center"
       >
         Volver al inicio
       </Link>

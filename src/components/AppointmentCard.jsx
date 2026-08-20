@@ -135,7 +135,7 @@ export default function AppointmentCard({ appointment, onUpdate }) {
       <RescheduleModal
         open={showReschedule}
         humanId={appointment.humanId}
-        currentServiceTypeIds={appointment.serviceTypes.map((s) => s.id)}
+        currentStartTime={appointment.startTime}
         onClose={() => setShowReschedule(false)}
         onConfirmed={handleRescheduled}
       />

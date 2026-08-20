@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import heroImg from '../assets/hero.jpg'
+import heroImg from '../assets/hero.png'
 import { ArrowDown } from "lucide-react";
 
 export default function Hero() {
@@ -36,7 +36,7 @@ export default function Hero() {
         className="absolute inset-0 z-0"
         style={{
           backgroundImage: `url(${heroImg})`,
-          backgroundSize: 'fill',
+          backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'right',
         }}
@@ -46,7 +46,7 @@ export default function Hero() {
         className="absolute inset-0 z-11"
         style={{
           background:
-            'linear-gradient(to right, rgba(180, 120, 90, 0.35) 0%, rgba(255,255,255) 60%, transparent 100%)',
+            'linear-gradient(to right, hsl(32 35% 92%) 30%, transparent 100%)',
         }}
       />
 

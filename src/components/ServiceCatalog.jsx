@@ -193,7 +193,7 @@ export default function ServiceCatalog() {
                             aria-label={`${isSelected ? "Quitar" : "Seleccionar"} ${type.name}`}
                             aria-pressed={isSelected}
                           >
-                            {isSelected ? <Check className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+                            {isSelected ? <Check className="h-5 w-5 text-white" /> : <Plus className="h-5 w-5" />}
                           </button>
                         </div>
                       )
