@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import LandingPage from '../pages/LandingPage'
-import BookingPage from '../pages/BookingPage'
-import MyBookingsPage from '../pages/MyBookingsPage'
+
+const BookingPage = lazy(() => import('../pages/BookingPage'))
+const MyBookingsPage = lazy(() => import('../pages/MyBookingsPage'))
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -18,11 +19,13 @@ export default function AppRouter() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/reserva" element={<BookingPage />} />
-        <Route path="/mis-turnos" element={<MyBookingsPage />} />
-      </Routes>
+      <Suspense fallback={<div className="min-h-screen" />}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/reserva" element={<BookingPage />} />
+          <Route path="/mis-turnos" element={<MyBookingsPage />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

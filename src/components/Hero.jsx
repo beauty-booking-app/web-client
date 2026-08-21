@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import heroImg from '../assets/hero.png'
+import heroImg from '../assets/hero.webp'
 import { ArrowDown } from "lucide-react";
 
 export default function Hero() {
