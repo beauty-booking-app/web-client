@@ -13,13 +13,7 @@ export default function ServiceCatalog() {
   const sectionRef = useRef(null)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    if (!loading && categories.length > 0 && activeId === null) {
-      setActiveId(categories[0].id)
-    }
-  }, [loading, categories, activeId])
-
-  const activeCategory = categories.find((c) => c.id === activeId) || categories[0]
+  const activeCategory = categories.find((c) => c.id === activeId) ?? categories[0]
 
   useEffect(() => {
     const node = sectionRef.current
@@ -40,12 +34,12 @@ export default function ServiceCatalog() {
     targets.forEach((el) => observer.observe(el))
 
     return () => observer.disconnect()
-  }, [activeId, loading])
+  }, [activeCategory?.id, loading])
 
   if (loading) {
     return (
       <section id="catalogo" className="py-20 sm:py-28 px-[6%] sm:px-[8%]">
-        <div className="animate-pulse">
+        <div>
           <div className="h-3 w-40 bg-foreground/10 rounded mb-4" />
           <div className="h-10 w-96 max-w-full bg-foreground/10 rounded mb-12" />
 
@@ -103,11 +97,11 @@ export default function ServiceCatalog() {
             <button
               key={cat.id}
               role="tab"
-              aria-selected={activeId === cat.id}
+              aria-selected={activeCategory?.id === cat.id}
               aria-controls={`panel-${cat.id}`}
               onClick={() => setActiveId(cat.id)}
               className={`font-mono text-xs font-semibold uppercase tracking-wide px-5 py-3 whitespace-nowrap rounded-t-xl border-b-2 transition-all duration-300 cursor-pointer ${
-                activeId === cat.id
+                activeCategory?.id === cat.id
                   ? "border-primary text-primary"
                   : "border-transparent text-foreground/60 hover:text-foreground"
               }`}
@@ -123,7 +117,7 @@ export default function ServiceCatalog() {
       {activeCategory && (
         <div
           role="tabpanel"
-          id={`panel-${activeId}`}
+          id={`panel-${activeCategory?.id}`}
           className="grid grid-cols-1 lg:grid-cols-[3fr_4fr] gap-10 lg:gap-16 items-start"
         >
           {/* Image / Description */}

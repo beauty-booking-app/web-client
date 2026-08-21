@@ -9,9 +9,9 @@
   --color-foreground: hsl(25, 35%, 22%);
   --color-foreground-muted: hsl(25, 20%, 45%);
   --color-border: hsl(30, 15%, 88%);
+  --font-display: "Fraunces Variable", serif;
 
-  --font-display: "Fraunces", serif;
-  --font-body: "Nunito Sans", sans-serif;
+  --font-body: "Nunito Sans Variable", sans-serif;
 }
 
 :root {
