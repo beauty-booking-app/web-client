@@ -11,11 +11,11 @@ export default function Footer() {
     >
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 mb-12">
         {/* Col 1 — Marca */}
-        <div className="flex flex-col gap-3 w-50">
+        <div className="flex flex-col items-center gap-3 w-full max-w-50 mx-auto lg:mx-0">
           <img
             src={logo}
             alt="Tammi"
-            className="w-full"
+            className="h-auto w-full max-w-36 sm:max-w-44"
           />
 
           <p className="text-sm leading-relaxed text-center">
@@ -111,8 +111,8 @@ export default function Footer() {
 
       {/* Barra inferior */}
       <div className="border-t border-primary/20 pt-8 text-center">
-        <p className="text-xs text-primary">
-          Hecho con amor en M&amp;M Peluquería · 2026
+        <p className="text-xs text-foreground">
+          Hecho con amor en Tammi Salón de belleza · 2026
         </p>
       </div>
     </footer>

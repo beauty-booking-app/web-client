@@ -3,7 +3,7 @@
 _Checklist accionable derivada del `plan.md`. Marca `[x]` al completarlas._
 
 - [x] Configurar Tailwind CSS 4 en `vite.config.js` (agregar plugin `@tailwindcss/vite`).
-- [x] Actualizar `index.html`: `lang="es"`, título "M&M Peluquería", Google Fonts (Fraunces + Nunito Sans).
+- [x] Actualizar `index.html`: `lang="es"`, título "Tammi", Google Fonts (Fraunces + Nunito Sans).
 - [x] Reescribir `src/index.css`: importar Tailwind, definir tokens CSS (`--primary`, `--accent`, `--background`, `--foreground`), tipografía base, utilidades `.reveal` y `.lift-card`.
 - [x] Crear `src/components/Hero.jsx`: full-screen, imagen difuminada, overlay, grid 2 columnas, volanta, título, bajada, 2 botones CTA.
 - [x] Crear `src/components/About.jsx`: fondo crema, layout asimétrico, volanta, título, párrafo, 3 tarjetas con ícono/título/descripción.

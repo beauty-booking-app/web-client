@@ -2,7 +2,7 @@
 
 _Checklist accionable derivada del `plan.md`. Marca `[x]` al completarlas._
 
-- [x] Crear `src/components/Navbar.jsx`: nav fijo, logo "M&M" izquierda, CTA derecha, fondo transparente.
+- [x] Crear `src/components/Navbar.jsx`: nav fijo, CTA derecha, fondo transparente.
 - [x] Agregar `scroll-padding-top` en `src/index.css` para compensar el nav fijo.
 - [x] Importar `<Navbar />` en `src/App.jsx` antes de `<Hero />`.
 - [x] Validar `pnpm build` sin errores.

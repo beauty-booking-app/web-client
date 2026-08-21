@@ -27,7 +27,7 @@ export default function Navbar() {
         </a>
         <a
           href="/reserva"
-          className="bg-primary hover:bg-primary-hover inline-flex items-center justify-center px-6 sm:px-8 py-3 text-sm font-bold text-white rounded-full min-h-11 min-w-11 cursor-pointer"
+          className="bg-primary-hover hover:bg-primary inline-flex items-center justify-center px-6 sm:px-8 py-3 text-sm font-bold text-white rounded-full min-h-11 min-w-11 cursor-pointer"
           style={{
             transition: 'background-color 0.2s'
           }}
