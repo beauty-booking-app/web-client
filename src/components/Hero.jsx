@@ -91,17 +91,10 @@ export default function Hero() {
           >
             <a
               href="/reserva"
-              className="inline-flex items-center justify-center px-8 py-4 text-sm font-semibold text-white rounded-full min-h-11 min-w-11"
+              className="bg-primary-hover hover:bg-primary inline-flex items-center justify-center px-8 py-4 text-sm font-semibold text-white rounded-full min-h-11 min-w-11"
               style={{
-                backgroundColor: 'var(--primary)',
                 transition: 'background-color 0.2s',
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = 'var(--primary-hover)')
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = 'var(--primary)')
-              }
             >
               Reservá tu turno
             </a>

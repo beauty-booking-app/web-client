@@ -2,7 +2,7 @@
 
 ## Qué construimos
 
-M&M(web-app) es una landing page y sistema de reservas para un salón de barrio de peluquería y manicura. Resuelve el problema de agendar turnos de forma simple: el cliente ve los servicios, elige fecha y hora, y reserva en pocos pasos sin necesidad de llamar por teléfono.
+Tammi(web-client) es una landing page y sistema de reservas para un salón de barrio de peluquería y manicura. Resuelve el problema de agendar turnos de forma simple: el cliente ve los servicios, elige fecha y hora, y reserva en pocos pasos sin necesidad de llamar por teléfono.
 
 Las piezas principales del producto son:
 

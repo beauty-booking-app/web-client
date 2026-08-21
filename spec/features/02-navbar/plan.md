@@ -11,7 +11,6 @@ Crear un componente `Navbar.jsx` que se renderiza en `App.jsx` por encima de las
 1. **`src/components/Navbar.jsx`** — componente nuevo:
    - `<nav>` fijo arriba (`fixed top-0 inset-x-0 z-50`).
    - Contenedor interno con `px-[6%] sm:px-[8%]` (consistente con el resto).
-   - Izquierda: texto "M&M" con `font-display` (Fraunces).
    - Derecha: botón CTA "Reservá tu turno" con estilo primario (`bg-primary`, `text-white`, `rounded-full`).
    - Estado inicial: fondo transparente.
    - Al scrollear > 50px: fondo blanco sólido con sombra (`shadow-md`).

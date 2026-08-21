@@ -9,7 +9,7 @@ Reemplazar el boilerplate de Vite por dos componentes de sección (`Hero` y `Abo
 ## Implementación
 
 1. **`vite.config.js`** — agregar `@tailwindcss/vite` al array de plugins.
-2. **`index.html`** — cambiar `lang="es"`, actualizar `<title>` a "M&M Peluquería", agregar preconnect a Google Fonts y los `<link>` para Fraunces (display) y Nunito Sans (body).
+2. **`index.html`** — cambiar `lang="es"`, actualizar `<title>` a "Tammi", agregar preconnect a Google Fonts y los `<link>` para Fraunces (display) y Nunito Sans (body).
 3. **`src/index.css`** — reemplazar completamente:
    - Importar Tailwind (`@import "tailwindcss"`).
    - Definir tokens CSS en `:root`: `--primary` (terracota), `--accent` (sage), `--background` (crema), `--foreground` (marrón oscuro).

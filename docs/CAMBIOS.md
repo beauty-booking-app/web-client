@@ -3,7 +3,7 @@
 ## 01 · Landing page
 
 - Configurado Tailwind CSS 4 como plugin de Vite (`@tailwindcss/vite`).
-- Actualizado `index.html`: `lang="es"`, título "M&M Peluquería", Google Fonts (Fraunces + Nunito Sans).
+- Actualizado `index.html`: `lang="es"`, título "Tammi", Google Fonts (Fraunces + Nunito Sans).
 - Reescrito `src/index.css`: tokens CSS del proyecto (`--primary`, `--accent`, `--background`, `--foreground`), utilidades `.reveal` y `.lift-card`, soporte `prefers-reduced-motion`.
 - Creado `src/components/Hero.jsx`: sección full-screen con imagen difuminada, overlay sepia/rosado, grid 2 columnas, volanta, título, bajada, 2 botones CTA.
 - Creado `src/components/About.jsx`: sección con fondo crema, layout asimétrico, volanta, título, párrafo, 3 tarjetas con íconos SVG.
@@ -12,7 +12,7 @@
 
 ## 02 · Navbar
 
-- Creado `src/components/Navbar.jsx`: nav fijo arriba, "M&M" a la izquierda, botón CTA "Reservá tu turno" a la derecha, fondo transparente.
+- Creado `src/components/Navbar.jsx`: nav fijo arriba, botón CTA "Reservá tu turno" a la derecha, fondo transparente.
 - Agregado `scroll-padding-top: 80px` en `src/index.css` para compensar el nav fijo.
 - Importado `<Navbar />` en `src/App.jsx` antes de `<Hero />`.
 

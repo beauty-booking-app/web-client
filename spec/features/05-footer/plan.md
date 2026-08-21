@@ -7,16 +7,16 @@ Componente puro sin estado. Un solo archivo `Footer.jsx`.
 ### Componente: `src/components/Footer.jsx`
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  M&M         Servicios     Contacto      Redes      │
-│  Peluquería                                              │
-│  Descripción   Corte        Dirección    Instagram   │
-│               Tratamientos  Teléfono     WhatsApp    │
-│               Color         Horarios                 │
-│               Uñas                                   │
-├─────────────────────────────────────────────────────┤
-│         Hecho con amor en M&M Peluquería · 2026      │
-└─────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│  Tammi         Servicios     Contacto      Redes             │
+│  Salón...                                                    │
+│  Descripción   Corte        Dirección    Instagram           │
+│               Tratamientos  Teléfono     WhatsApp            │ 
+│               Color         Horarios                         │
+│               Uñas                                           │
+├──────────────────────────────────────────────────────────────┤
+│         Hecho con amor en Tammi Salón de belleza · 2026      │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ### Layout
@@ -28,7 +28,7 @@ Componente puro sin estado. Un solo archivo `Footer.jsx`.
 
 ### Columnas
 
-1. **M&M Peluquería:** título "M&M" en `font-display` bold, descripción corta del salón.
+1. **Tammi:** título "Tammi" en `font-display` bold, descripción corta del salón.
 2. **Servicios:** título "Servicios", lista de links a cada categoría de servicios.
 3. **Contacto:** título "Contacto", dirección, teléfono, horarios.
 4. **Redes:** título "Redes", links a Instagram y WhatsApp.
@@ -37,7 +37,7 @@ Componente puro sin estado. Un solo archivo `Footer.jsx`.
 
 - Borde superior `border-t border-white/10`.
 - Texto centrado, color blanco con opacidad 0.5, texto pequeño.
-- Contenido: "Hecho con amor en M&M Peluquería · 2026".
+- Contenido: "Hecho con amor en Tammi Salón de belleza · 2026".
 
 ### Accesibilidad
 

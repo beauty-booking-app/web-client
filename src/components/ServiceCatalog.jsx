@@ -178,7 +178,7 @@ export default function ServiceCatalog() {
                             <p className="text-foreground/70 text-sm max-w-md mb-2">
                               {type.description}
                             </p>
-                            <div className="flex items-center gap-4 text-xs text-foreground/50 font-mono">
+                            <div className="flex items-center gap-4 text-xs text-foreground font-mono">
                               <span>${formatPrice(type.price)}</span>
                               <span>{type.durationMinutes} min</span>
                             </div>
@@ -205,15 +205,12 @@ export default function ServiceCatalog() {
 
             {/* Footer de selección */}
             <div className="mt-8 flex items-center justify-between gap-4 flex-wrap p-5 rounded-2xl bg-secondary">
-              <p className="font-mono text-xs font-semibold uppercase tracking-wide text-foreground/70 px-4">
+              <p className="font-mono text-xs font-semibold uppercase tracking-wide text-foreground/90 px-4">
                 {selectedTypes.length} servicio{selectedTypes.length !== 1 ? 's' : ''} seleccionado{selectedTypes.length !== 1 ? 's' : ''}
               </p>
               <button
                 onClick={() => navigate('/reserva')}
-                className="inline-flex items-center justify-center px-8 py-4 text-sm font-semibold text-white rounded-full min-h-11 min-w-11 transition-all cursor-pointer"
-                style={{ backgroundColor: 'var(--primary)' }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--primary-hover)')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--primary)')}
+                className="bg-primary-hover hover:bg-primary inline-flex items-center justify-center px-8 py-4 text-sm font-semibold text-white rounded-full min-h-11 min-w-11 transition-all cursor-pointer"
               >
                 <span className='flex gap-2 items-center'>
                   Reservar turno

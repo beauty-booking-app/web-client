@@ -4,7 +4,7 @@
 
 ## Qué hace
 
-La landing page presenta el salón M&M al visitante con dos secciones:
+La landing page presenta el salón Tammi al visitante con dos secciones:
 
 1. **Hero** — pantalla completa con imagen de fondo difuminada del interior del salón, un overlay cálido (sepia/rosado) que unifica el tono, y contenido superpuesto en grid de dos columnas: a la izquierda una volanta, un título, una bajada y dos botones CTA alineados horizontalmente; a la derecha se deja ver la imagen de fondo.
 
